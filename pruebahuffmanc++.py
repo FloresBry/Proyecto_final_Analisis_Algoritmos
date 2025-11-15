@@ -21,18 +21,7 @@ def compresion(data, diccionario):
     bin_str = ''.join(diccionario[ch] for ch in data)
     return [int(b) for b in bin_str]  # lista de bits
 
-cadena_grande = (
-    "hola mundo, este es un ejemplo de texto largo donde quiero probar la compresion. "
-    "El algoritmo de Huffman asigna códigos más cortos a los caracteres frecuentes. "
-    "hola universo, hola galaxia, hola sistema solar, hola estrella, hola planeta. "
-    "Este texto contiene múltiples ocurrencias de la palabra hola para que podamos "
-    "buscarla en la versión comprimida. hola hola hola hola hola hola hola hola hola hola. "
-    "Además agregamos frases adicionales para aumentar el tamaño del corpus y hacer "
-    "que la búsqueda sea más interesante. hola tierra, hola marte, hola jupiter, hola saturno. "
-    "Seguimos repitiendo la palabra hola en diferentes contextos: hola amigo, hola vecino, "
-    "hola computadora, hola programa, hola algoritmo, hola datos, hola binario, hola bits. "
-    "Este texto es suficientemente largo y puede repetirse varias veces para simular un corpus real. "
-) * 50
+cadena_grande = "hola hola hola hola " * 100
 patron = "hola"
 
 diccionario = huffman_encoding(cadena_grande + patron)
