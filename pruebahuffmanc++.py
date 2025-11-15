@@ -1,6 +1,8 @@
 import heapq
-import busqueda
 import time
+import busqueda
+from bitarray import bitarray
+
 def huffman_encoding(data):
     freq = {}
     for ch in data:
@@ -19,30 +21,30 @@ def huffman_encoding(data):
 
 def compresion(data, diccionario):
     bin_str = ''.join(diccionario[ch] for ch in data)
-    return [int(b) for b in bin_str]  # lista de bits
+    ba = bitarray(bin_str)   # empaquetar bits
+    return ba
 
-cadena_grande = (
-    "hola mundo, este es un ejemplo de texto largo donde quiero probar la compresion. "
-    "El algoritmo de Huffman asigna códigos más cortos a los caracteres frecuentes. "
-    "hola universo, hola galaxia, hola sistema solar, hola estrella, hola planeta. "
-    "Este texto contiene múltiples ocurrencias de la palabra hola para que podamos "
-    "buscarla en la versión comprimida. hola hola hola hola hola hola hola hola hola hola. "
-    "Además agregamos frases adicionales para aumentar el tamaño del corpus y hacer "
-    "que la búsqueda sea más interesante. hola tierra, hola marte, hola jupiter, hola saturno. "
-    "Seguimos repitiendo la palabra hola en diferentes contextos: hola amigo, hola vecino, "
-    "hola computadora, hola programa, hola algoritmo, hola datos, hola binario, hola bits. "
-    "Este texto es suficientemente largo y puede repetirse varias veces para simular un corpus real. "
-) * 50
+# Texto grande y patrón
+cadena_grande = "hola hola hola hola " * 100
 patron = "hola"
 
+# Diccionario Huffman
 diccionario = huffman_encoding(cadena_grande + patron)
+
+# Compresión en bitarray
 bit_grande = compresion(cadena_grande, diccionario)
 bit_patron = compresion(patron, diccionario)
 
-print("bit_grande:", bit_grande[:20], "...")
-print("bit_patron:", bit_patron)
-start_time2 = time.time()
-posiciones = busqueda.buscar_patron_binario(bit_grande, bit_patron)
-end_time2 = time.time()
+# Convertir a bytes para C++
+data_bytes = bit_grande.tobytes()
+pattern_bytes = bit_patron.tobytes()
+
+# Llamada al módulo C++
+start_time = time.time()
+posiciones = busqueda.buscar_patron_binario(
+    list(data_bytes), list(pattern_bytes), len(bit_patron)
+)
+end_time = time.time()
+
 print(f"Se encontró el patrón {len(posiciones)} veces en posiciones: {posiciones[:10]}...")
-print(f"Tiempo de búsqueda: {end_time2 - start_time2:.6f} segundos")
+print(f"Tiempo de búsqueda: {end_time - start_time:.6f} segundos")
