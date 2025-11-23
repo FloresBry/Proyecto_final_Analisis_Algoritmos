@@ -1,24 +1,42 @@
 import heapq
 import busqueda
 import time
+import tkinter as tk
 def huffman_encoding(data):
-    freq = {}
-    for ch in data:
-        freq[ch] = freq.get(ch, 0) + 1
-    heap = [[w, [ch, ""]] for ch, w in freq.items()]
-    heapq.heapify(heap)
-    while len(heap) > 1:
-        left = heapq.heappop(heap)
-        right = heapq.heappop(heap)
-        for p in left[1:]:
-            p[1] = '0' + p[1]
-        for p in right[1:]:
-            p[1] = '1' + p[1]
-        heapq.heappush(heap, [left[0] + right[0]] + left[1:] + right[1:])
-    return {ch: code for ch, code in heap[0][1:]}
+    # Check for empty input
+    if not data:
+        return "", None
+    frequency = {}
+    for char in data:
+    # Calculamos la frecuencia de cada caracter
+        if char not in frequency:
+            frequency[char] = 0
+        frequency[char] += 1
+    # Create a priority queue
+    nodo = [[weight, [char, ""]] for char, weight in frequency.items()]
+    while len(nodo) > 1:
+        # Ordenamos los nodos por frecuencia
+        nodo = sorted(nodo)
+        # Tomamos los dos nodos con menor frecuencia
+        izquierda = nodo[0]
+        derecha = nodo[1]
+        for par in izquierda[1:]:
+            # agregamos '0' al frente de cada código
+            par[1] = '0' + par[1]
+        for par in derecha[1:]:
+            # agregamos '1' al frente de cada código
+            par[1] = '1' + par[1]
+        nodo = nodo[2:]
+        # combinamos los dos nodo
+        nodo.append([izquierda[0] + derecha[0]] + izquierda[1:] + derecha[1:])
+    # Creamos la lista de códigos Huffman
+    huffman_code = sorted(nodo[0][1:], key=lambda p: (len(p[-1]), p))
+    # Lo convertimos en un diccionario
+    huffman_diccionario = {char: code for char, code in huffman_code}
+    return huffman_diccionario
 
 def compresion(data, diccionario):
-    bin_str = ''.join(diccionario[ch] for ch in data)
+    bin_str = ''.join(diccionario[char] for char in data)
     return [int(b) for b in bin_str]  # lista de bits
 
 cadena_grande = (
@@ -32,7 +50,7 @@ cadena_grande = (
     "Seguimos repitiendo la palabra hola en diferentes contextos: hola amigo, hola vecino, "
     "hola computadora, hola programa, hola algoritmo, hola datos, hola binario, hola bits. "
     "Este texto es suficientemente largo y puede repetirse varias veces para simular un corpus real. "
-) * 50
+) 
 patron = "hola"
 
 diccionario = huffman_encoding(cadena_grande + patron)
@@ -42,7 +60,9 @@ bit_patron = compresion(patron, diccionario)
 print("bit_grande:", bit_grande[:20], "...")
 print("bit_patron:", bit_patron)
 start_time2 = time.time()
-posiciones = busqueda.buscar_patron_binario(bit_grande, bit_patron)
+posiciones = busqueda.divide_and_conquer_search(bit_grande, bit_patron,0)
 end_time2 = time.time()
-print(f"Se encontró el patrón {len(posiciones)} veces en posiciones: {posiciones[:10]}...")
+print(f"Se encontró el patrón {len(posiciones)} veces en posiciones: {posiciones[:10]} ...")
 print(f"Tiempo de búsqueda: {end_time2 - start_time2:.6f} segundos")
+
+
