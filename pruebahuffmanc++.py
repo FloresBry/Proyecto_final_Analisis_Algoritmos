@@ -1,7 +1,7 @@
 import heapq
 import busqueda
 import time
-import tkinter as tk
+
 def huffman_encoding(data):
     # Check for empty input
     if not data:
@@ -50,7 +50,7 @@ cadena_grande = (
     "Seguimos repitiendo la palabra hola en diferentes contextos: hola amigo, hola vecino, "
     "hola computadora, hola programa, hola algoritmo, hola datos, hola binario, hola bits. "
     "Este texto es suficientemente largo y puede repetirse varias veces para simular un corpus real. "
-) 
+) * 50
 patron = "hola"
 
 diccionario = huffman_encoding(cadena_grande + patron)
